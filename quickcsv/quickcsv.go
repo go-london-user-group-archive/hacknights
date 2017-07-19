@@ -24,7 +24,7 @@ func Parse(
 
 	inQuote := false
 
-	var column []byte
+	column := []byte{}
 
 	for {
 		ch, err := br.ReadByte()
@@ -42,17 +42,21 @@ func Parse(
 			if inQuote {
 				// end of field
 				inQuote = false
-				output = append(output, column)
-				column = nil
+				//	output = append(output, column)
+				//	column = nil
 			} else {
 				inQuote = true
 			}
 		case ch == ',' && !inQuote:
+			output = append(output, column)
+			column = []byte{}
 		case ch == eor:
 			if inQuote {
 				panic("code this bit")
 			}
+			output = append(output, column)
 			cb(output)
+			column = []byte{}
 			output = nil
 		default:
 			column = append(column, ch)
