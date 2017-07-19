@@ -5,9 +5,6 @@ import (
 	"io"
 )
 
-type Parser struct {
-}
-
 type Callback func([][]byte) bool
 
 func Parse(
