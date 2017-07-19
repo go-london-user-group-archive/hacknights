@@ -39,8 +39,6 @@ func Parse(
 			if inQuote {
 				// end of field
 				inQuote = false
-				//	output = append(output, column)
-				//	column = nil
 			} else {
 				inQuote = true
 			}
@@ -57,7 +55,6 @@ func Parse(
 			output = nil
 		default:
 			column = append(column, ch)
-			// add to buffer
 		}
 	}
 }
