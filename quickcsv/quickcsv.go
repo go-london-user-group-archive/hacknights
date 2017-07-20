@@ -15,13 +15,14 @@ func Parse(
 ) error {
 	br := bufio.NewReader(r)
 
-	//buf := make([]byte, 0, 1024)
+	buf := make([]byte, 0, 1024)
 
-	var output [][]byte
+	output := make([][]byte, 0, 64)
 
 	inQuote := false
 
-	column := []byte{}
+	var lastIndex int
+	var index int
 
 	for {
 		ch, err := br.ReadByte()
@@ -43,18 +44,22 @@ func Parse(
 				inQuote = true
 			}
 		case ch == ',' && !inQuote:
-			output = append(output, column)
-			column = []byte{}
+			output = append(output, buf[lastIndex:index])
+			lastIndex = index
 		case ch == eor:
 			if inQuote {
 				panic("code this bit")
 			}
-			output = append(output, column)
+			output = append(output, buf[lastIndex:index])
+			//lastIndex = index
 			cb(output)
-			column = []byte{}
-			output = nil
+			index = 0
+			lastIndex = 0
+			output = output[0:0]
+			buf = buf[0:0]
 		default:
-			column = append(column, ch)
+			buf = append(buf, ch)
+			index++
 		}
 	}
 }

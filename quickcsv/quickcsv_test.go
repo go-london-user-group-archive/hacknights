@@ -7,6 +7,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestSuperSimple(t *testing.T) {
+	assert := assert.New(t)
+
+	in := `"aaaaa","bbbbb"
+`
+	r := strings.NewReader(in)
+
+	var output [][]string
+
+	err := Parse(r, ',', '\n', func(data [][]byte) bool {
+		var row []string
+		for _, cell := range data {
+			row = append(row, string(cell))
+		}
+		output = append(output, row)
+		return true
+	})
+	assert.NoError(err)
+
+	assert.Equal([][]string{
+		[]string{"aaaaa", "bbbbb"},
+	}, output)
+}
+
 func TestSimpleUnquoted(t *testing.T) {
 	assert := assert.New(t)
 
