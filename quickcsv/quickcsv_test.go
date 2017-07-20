@@ -16,18 +16,22 @@ dasd,e,,f
 `
 	r := strings.NewReader(in)
 
-	var output [][][]byte
+	var output [][]string
 
 	err := Parse(r, ',', '\n', func(data [][]byte) bool {
-		output = append(output, data)
+		var row []string
+		for _, cell := range data {
+			row = append(row, string(cell))
+		}
+		output = append(output, row)
 		return true
 	})
 	assert.NoError(err)
 
-	assert.Equal([][][]byte{
-		[][]byte{[]byte("a"), []byte("b"), []byte("c")},
-		[][]byte{[]byte("dasd"), []byte("e"), []byte(""), []byte("f")},
-		[][]byte{[]byte("1"), []byte("2"), []byte("3")},
+	assert.Equal([][]string{
+		[]string{"a", "b", "c"},
+		[]string{"dasd", "e", "", "f"},
+		[]string{"1", "2", "3"},
 	}, output)
 }
 
@@ -40,17 +44,21 @@ func TestSimpleQuoted(t *testing.T) {
 `
 	r := strings.NewReader(in)
 
-	var output [][][]byte
+	var output [][]string
 
 	err := Parse(r, ',', '\n', func(data [][]byte) bool {
-		output = append(output, data)
+		var row []string
+		for _, cell := range data {
+			row = append(row, string(cell))
+		}
+		output = append(output, row)
 		return true
 	})
 	assert.NoError(err)
 
-	assert.Equal([][][]byte{
-		[][]byte{[]byte("a"), []byte("b"), []byte("c")},
-		[][]byte{[]byte("dasd"), []byte("e,"), []byte("f")},
-		[][]byte{[]byte("1"), []byte("2"), []byte("3")},
+	assert.Equal([][]string{
+		[]string{"a", "b", "c"},
+		[]string{"dasd", "e,", "f"},
+		[]string{"1", "2", "3"},
 	}, output)
 }
